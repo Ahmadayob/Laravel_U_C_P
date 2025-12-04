@@ -9,8 +9,11 @@ class Post extends Model
     // use HasFactory;
     protected $table = 'post';
 
-    protected $fillable = ['title', 'body', 'published']; // fields that can be updated
+    protected $fillable = ['title', 'body', 'published', 'author']; // fields that can be updated
 
     protected $guarded = ['id']; // fields that cannot be updated
 
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
 }

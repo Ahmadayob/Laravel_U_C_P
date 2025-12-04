@@ -1,16 +1,8 @@
-<div class="container">
-    <h1>Blog Posts</h1>
-    @if($posts->isEmpty())
-        <p>No posts available.</p>
-    @else
-        <ul>
-            @foreach($posts as $post)
-                <li>
-                    <h2>{{ $post->title }}</h2>
-                    <p>{{ $post->body }}</p>
-                    <small>Published: {{ $post->published ? 'Yes' : 'No' }}</small>
-                </li>
-            @endforeach
-        </ul>
-    @endif
-</div>
+<x-layout :title="$pageTitle">
+    <h2>Blog</h2>
+    @foreach ($posts as $post)
+    <h1 class="text-2xl">{{ $post->title }}</h1>
+    <p>{{ $post->body }}</p>
+    @endforeach
+</x-layout>
+ 
