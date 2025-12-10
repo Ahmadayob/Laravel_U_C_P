@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\IndexController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\TagController;
 
 Route::get('/', [IndexController::class, 'index']);
 Route::get('/about', [IndexController::class, 'about']);
@@ -16,5 +17,11 @@ Route::get('/blog/create', [PostController::class, 'create']);
 Route::get('/blog/{id}/delete', [PostController::class, 'delete']);
 Route::get('/blog/{myId}', [PostController::class, 'show']);
 
-Route::get('/comments',[CommentController::class,'index']);
-Route::get('/comments/create',[CommentController::class,'create']);
+Route::get('/comments', [CommentController::class, 'index']);
+Route::get('/comments/create', [CommentController::class, 'create']);
+
+
+Route::get('/tags', [TagController::class, 'index']);
+Route::get('/tags/create', [TagController::class, 'create']);
+Route::get('/test-many', [TagController::class, 'testManyToMany']);
+
