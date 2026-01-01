@@ -2,66 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
-use App\Models\Tag;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-
+use App\Models\Tag;
 class TagController extends Controller
 {
-
-    public function index(): View
+    function index()
     {
-        $tags = Tag::all();
-
-        // Pass the data to the view
-        return view('tag.index', [
-            'tags' => $tags,
-            'pageTitle' => 'Tags',
-        ]);
+        $tags = Tag::paginate(10);
+        return view("tag.index", ['tags' => $tags, 'pageTitle' => 'Tags']);
     }
 
-
-    public function create(): RedirectResponse
-    {
-        Tag::create([
-
-            'title' => 'CSS',
-
-        ]);
-
-        return redirect('/tags');
-    }
-
-    function testManyToMany()
+    function create()
     {
 
-        //    $post3 = Post::find(3);
-        //      $post2 = Post::find(2);
-//        $post1 = Post::find(1);
-
-        //      $post3->tags()->attach([1, 2]);
-//        $post2->tags()->attach([1]);
-
-
-        //return response()->json(([
-        //'post3' => $post3->tags,
-        // 'post2' => $post2->tags,
-        //   'post1' => $post1->tags,
-        // ]));
-
-        $tag = Tag::find(1);
-
-        $tag->posts()->attach([3]);
-
-        return response()->json([
-            'tag' => $tag->title,
-            'posts' => $tag->posts
-
-        ]);
+        return view('tag.create', ['pageTitle' => 'Create New Tag']);
 
     }
 
+    function store(Request $request)
+    {
+        // @todo : this will be completed in the form section
+    }
 
+    function show(string $id)
+    {
+        $tag = Tag::find($id);
+        return view('tag.show', ['tag' => $tag, 'pageTitle' => 'view Tag']);
+    }
+
+    function edit(string $id)
+    {
+        $tag = Tag::find($id);
+        return view('tag.edit', ['tag' => $tag, 'pageTitle' => 'Edit Tag']);
+    }
+
+    function update(Request $request, string $id)
+    {
+        // @todo : this will be completed in the form section
+    }
+
+    function destroy(string $id)
+    {
+        // @todo : this will be completed in the form section
+    }
 }

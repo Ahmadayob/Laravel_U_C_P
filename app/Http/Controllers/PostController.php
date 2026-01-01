@@ -4,17 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-
 
 class PostController extends Controller
 {
-
     /**
-     * Display a listing of the posts.
+     * Display a listing of the resource.
      */
-    public function index(): View
+    public function index()
     {
         // Eloquent ORM -> Get all data from posts table
         $posts = Post::paginate(10);
@@ -26,13 +22,27 @@ class PostController extends Controller
         ]);
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('post.create', ['pageTitle' => "Blog - C reate New Post"]);
+    }
 
     /**
-     * Display a single post.
+     * Store a newly created resource in storage.
      */
-    public function show(int $id): View
+    public function store(Request $request)
     {
-        // لو الـ id مش موجود يرجع 404 بدل ما يعمل خطأ
+        // @TODO: this will be completed in the forms section
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
         $post = Post::findOrFail($id);
 
         return view('post.show', [
@@ -42,29 +52,26 @@ class PostController extends Controller
     }
 
     /**
-     * Create a demo post (for testing).
+     * Show the form for editing the specified resource.
      */
-    public function create(): RedirectResponse
+    public function edit(string $id)
     {
-        // Post::create([
-        //   'title' => 'My find unique post',
-        // 'body' => 'this is my content',
-        //'author' => 'Ahmad',
-        // 'published' => true,
-        // ]);
-
-        Post::factory(1000)->create();
-
-        return redirect('/blog');
+        return view('post.edit', ['pageTitle' => "Blog - Edit Post"]);
     }
 
     /**
-     * Delete a post by id.
+     * Update the specified resource in storage.
      */
-    public function delete(int $id): RedirectResponse
+    public function update(Request $request, string $id)
     {
-        Post::destroy($id);
+        // @TODO: this will be completed in the forms section
+    }
 
-        return redirect('/blog');
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        // @TODO: this will be completed in the forms section
     }
 }

@@ -8,23 +8,41 @@ class CommentController extends Controller
 {
     function index()
     {
-        // Eloquent ORM ->Get all data from posts table
-        $data = Comment::all();
-
-        // pass the data to the view
-        return view('comment.index', ['comments' => $data, "pageTitle" => "Blog"]);
+        $comments = Comment::paginate(10);
+        return view("comment.index", ['comments' => $comments, 'pageTitle' => 'Comments']);
     }
 
     function create()
     {
-        //  Comment::create([
-        //    'author' => 'Ahmad',
-        //    'content' => 'this is another test content',
-        //    'post_id' => 3
-        //]);
 
-        Comment::factory(5)->create();
-        return redirect('/comments');
+        return view('comment.create', ['pageTitle' => 'Create New Comment']);
 
+    }
+
+    function store(Request $request)
+    {
+        // @todo : this will be completed in the form section
+    }
+
+    function show(string $id)
+    {
+        $comment = Comment::find($id);
+        return view('comment.show', ['comment' => $comment, 'pageTitle' => 'view Comment']);
+    }
+
+    function edit(string $id)
+    {
+        $comment = Comment::find($id);
+        return view('comment.edit', ['comment' => $comment, 'pageTitle' => 'Edit Comment']);
+    }
+
+    function update(Request $request, string $id)
+    {
+        // @todo : this will be completed in the form section
+    }
+
+    function destroy(string $id)
+    {
+        // @todo : this will be completed in the form section
     }
 }
