@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
-use Illuminate\Http\Request;
+use App\Http\Requests\BlogPostRequest;
 
 class PostController extends Controller
 {
@@ -13,7 +13,7 @@ class PostController extends Controller
     public function index()
     {
         // Eloquent ORM -> Get all data from posts table
-        $posts = Post::paginate(10);
+        $posts = Post::latest()->paginate(10);
 
         // Pass the data to the view
         return view('post.index', [
@@ -27,15 +27,24 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('post.create', ['pageTitle' => "Blog - C reate New Post"]);
+        return view('post.create', ['pageTitle' => "Blog - Create New Post"]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(BlogPostRequest $request)
     {
-        // @TODO: this will be completed in the forms section
+
+        $post = new Post();
+        $post->title = $request->input('title');
+        $post->author = $request->input('author');
+        $post->body = $request->input('body');
+        $post->published = $request->input('published');
+
+        $post->save();
+
+        return redirect('/blog')->with('success', 'Post created successfully');
     }
 
     /**
@@ -56,22 +65,32 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        return view('post.edit', ['pageTitle' => "Blog - Edit Post"]);
+        $post = Post::findOrFail($id);
+        return view('post.edit', ['post' => $post, 'pageTitle' => "Blog - Edit Post: " . $post->title]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(BlogPostRequest $request, string $id)
     {
-        // @TODO: this will be completed in the forms section
+        $post = Post::findOrFail($id);
+
+        $post->title = $request->input('title');
+        $post->author = $request->input('author');
+        $post->body = $request->input('body');
+        $post->published = $request->input('published', false);
+
+        $post->save();
+
+        return redirect('/blog')->with('success', 'Post updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        // @TODO: this will be completed in the forms section
+        $post = Post::findOrFail($id);
+        $post->delete();
+
+        return redirect('/blog')->with('success', 'Post deleted successfully');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Models\Comment;
 class CommentController extends Controller
@@ -21,7 +22,18 @@ class CommentController extends Controller
 
     function store(Request $request)
     {
-        // @todo : this will be completed in the form section
+
+        $post = Post::findOrFail($request->input('post_id'));
+
+        $comment = new Comment();
+
+        $comment->author = $request->input('author');
+        $comment->content = $request->input('content');
+        $comment->post_id = $request->input('post_id');
+
+        $comment->save();
+
+        return redirect('/blog')->with('success', 'Comment add successfully');
     }
 
     function show(string $id)
