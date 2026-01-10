@@ -1,7 +1,7 @@
 <x-layout :title="$pageTitle">
     <form method="POST" action="/blog/{{ $post->id }}">
         @csrf
-        @method('PUT')
+        @method('PATCH')
 
         <input type="hidden" name="id" value="{{ $post->id }}" />
 

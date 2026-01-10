@@ -1,11 +1,13 @@
 <?php
 
-use App\Http\Controllers\api\v1\AuthController;
+use App\Http\Middleware\CheckRole;
 use App\Http\Middleware\OnlyMe;
+use App\Http\Middleware\RoleMiddlware;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,7 +17,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->alias(['onlyme' => OnlyMe::class]);
+        $middleware->alias([
+            'onlyme' => OnlyMe::class,
+            'role' => RoleMiddlware::class,
+            'check.role' => CheckRole::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         // handel 401 error for api routes

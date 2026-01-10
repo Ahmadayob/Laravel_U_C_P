@@ -12,8 +12,11 @@ class PostController extends Controller
      */
     public function index()
     {
+        // Check authorization
+        $this->authorize('viewAny', Post::class);
+
         // Eloquent ORM -> Get all data from posts table
-        $posts = Post::latest()->paginate(10);
+        $posts = Post::with('user')->latest()->paginate(10);
 
         // Pass the data to the view
         return view('post.index', [
@@ -27,6 +30,9 @@ class PostController extends Controller
      */
     public function create()
     {
+        // Check authorization
+        $this->authorize('create', Post::class);
+
         return view('post.create', ['pageTitle' => "Blog - Create New Post"]);
     }
 
@@ -35,12 +41,15 @@ class PostController extends Controller
      */
     public function store(BlogPostRequest $request)
     {
+        // Check authorization
+        $this->authorize('create', Post::class);
 
         $post = new Post();
         $post->title = $request->input('title');
         $post->author = $request->input('author');
         $post->body = $request->input('body');
         $post->published = $request->input('published');
+        $post->user_id = auth()->id(); // Assign the current user as owner
 
         $post->save();
 
@@ -52,7 +61,10 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        $post = Post::findOrFail($id);
+        $post = Post::with('user')->findOrFail($id);
+
+        // Check authorization
+        $this->authorize('view', $post);
 
         return view('post.show', [
             'post' => $post,
@@ -66,6 +78,10 @@ class PostController extends Controller
     public function edit(string $id)
     {
         $post = Post::findOrFail($id);
+
+        // Check authorization
+        $this->authorize('update', $post);
+
         return view('post.edit', ['post' => $post, 'pageTitle' => "Blog - Edit Post: " . $post->title]);
     }
 
@@ -75,6 +91,9 @@ class PostController extends Controller
     public function update(BlogPostRequest $request, string $id)
     {
         $post = Post::findOrFail($id);
+
+        // Check authorization
+        $this->authorize('update', $post);
 
         $post->title = $request->input('title');
         $post->author = $request->input('author');
@@ -89,6 +108,10 @@ class PostController extends Controller
     public function destroy(string $id)
     {
         $post = Post::findOrFail($id);
+
+        // Check authorization
+        $this->authorize('delete', $post);
+
         $post->delete();
 
         return redirect('/blog')->with('success', 'Post deleted successfully');

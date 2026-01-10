@@ -13,7 +13,8 @@ use App\Http\Controllers\ContactController;
 // ## Public Routes
 Route::get('/', IndexController::class);
 
-Route::get('/contact', ContactController::class);
+Route::get('/contact', [ContactController::class, 'index']);
+Route::post('/contact', [ContactController::class, 'store']);
 
 Route::get('/job', [JobController::class, 'index']);
 
@@ -28,10 +29,25 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // ## Protected Routes
 Route::middleware('auth')->group(function () {
-    Route::resource('blog', PostController::class);
-    Route::resource('comments', CommentController::class);
+
+
+    Route::middleware('role:viewer.editor,admin')->group(function () {
+        Route::get('/blog', [PostController::class, 'index']);
+        Route::get('/blog/{id}', [PostController::class, 'show']);
+        Route::resource('comments', CommentController::class);
+    });
+
+    Route::middleware('role:editor,admin')->group(function () {
+        Route::get('/blog/{id}/edit', [PostController::class, 'edit']);
+        Route::patch('/blog/{id}', [PostController::class, 'update']);
+    });
+
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/blog/create', [PostController::class, 'create']);
+        Route::post('/blog', [PostController::class, 'store']);
+        Route::delete('/blog/{id}', [PostController::class, 'destroy']);
+    });
+
 });
 
-Route::middleware('onlyme')->group(function () {
-    Route::get('/about', AboutController::class);
-});
+Route::get('/about', AboutController::class);
